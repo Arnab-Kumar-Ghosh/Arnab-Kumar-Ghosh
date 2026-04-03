@@ -4,11 +4,11 @@
   <a href="https://github.com/Arnab-Kumar-Ghosh/">Arnab</a>
 </h2>
 
-<h6 align="center">A passionate coder and developer </h6>
+<h6 align="center">Programmer-Coder-Developer</h6>
 
 <br>
 <br>
 
 <p align="center">
-  <img height="150em" src="https://github-readme-stats.vercel.app/api?username=arnab-kumar-ghosh&count_private=true&show_icons=true&hide_border=true&theme=radical" />
+  <img height="150em" src="https://github-readme-stats-fast.vercel.app/api?username=arnab-kumar-ghosh&count_private=true&show_icons=true&hide_border=true&theme=radical" />
 </p>
