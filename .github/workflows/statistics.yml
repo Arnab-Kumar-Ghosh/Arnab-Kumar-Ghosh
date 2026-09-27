@@ -1,0 +1,54 @@
+name: Generate Statistics Card
+
+on:
+  schedule:
+    - cron: '00 00,12 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/statistics.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: statistics-card
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    name: Generate & Publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Generate Light Card
+        uses: readme-tools/github-readme-stats-action@v1
+        with:
+          card: stats
+          options: username=${{ github.repository_owner }}&hide_title=false&hide_rank=false&show_icons=true&count_private=true&include_all_commits=true&disable_animations=false&theme=catppuccin_latte&locale=en&hide_border=true
+          path: dist/statistics-light.svg
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Generate Dark Card
+        uses: readme-tools/github-readme-stats-action@v1
+        with:
+          card: stats
+          options: username=${{ github.repository_owner }}&hide_title=false&hide_rank=false&show_icons=true&count_private=true&include_all_commits=true&disable_animations=false&theme=radical&locale=en&hide_border=true
+          path: dist/statistics-dark.svg
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Publish Cards
+        uses: crazy-max/ghaction-github-pages@v5
+        with:
+          github_token: ${{ secrets.GH_PAT }}
+          target_branch: statistics-output
+          build_dir: ./dist
+          publish_dir: ./dist
+          force_orphan: true
+          full_commit_message: 'Refresh Statistics Card'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}

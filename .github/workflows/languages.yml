@@ -1,0 +1,53 @@
+name: Generate Languages Card
+
+on:
+  schedule:
+    - cron: '00 00,12 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/languages.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: languages-card
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    name: Generate & Publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Generate Light Card
+        uses: readme-tools/github-readme-stats-action@v1
+        with:
+          card: top-langs
+          options: username=${{ github.repository_owner }}&hide_title=false&layout=compact&show_icons=true&theme=catppuccin_latte&locale=en&hide_border=true
+          path: dist/languages-light.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Dark Card
+        uses: readme-tools/github-readme-stats-action@v1
+        with:
+          card: top-langs
+          options: username=${{ github.repository_owner }}&hide_title=false&layout=compact&show_icons=true&theme=radical&locale=en&hide_border=true
+          path: dist/languages-dark.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Cards
+        uses: crazy-max/ghaction-github-pages@v5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: languages-output
+          build_dir: ./dist
+          publish_dir: ./dist
+          force_orphan: true
+          full_commit_message: 'Refresh Languages Card'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
